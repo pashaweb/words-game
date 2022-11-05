@@ -1,0 +1,38 @@
+[
+    {
+        "id": "1",
+        "url": "game_1.json"
+    },
+    {
+        "id": "2",
+        "url": "game_2.json"
+    },
+    {
+        "id": "3",
+        "url": "game_3.json"
+    },
+    {
+        "id": "4",
+        "url": "game_4.json"
+    },
+    {
+        "id": "5",
+        "url": "game_5.json"
+    },
+    {
+        "id": "6",
+        "url": "game_6.json"
+    },
+    {
+        "id": "7",
+        "url": "game_7.json"
+    },
+    {
+        "id": "8",
+        "url": "game_8.json"
+    },
+    {
+        "id": "9",
+        "url": "game_9.json"
+    }
+]

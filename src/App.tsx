@@ -1,18 +1,39 @@
 import React, { useEffect } from 'react';
+import useStore, { AppstateEnum } from './store/store';
 import './App.css';
-let appStart:boolean = false
+import GameStats from './components/GameStats';
+
 function App() {
+  const appstate = useStore((state) => state.appstate);
+  const loadGamesList = useStore((state) => state.loadGamesList);
+  const isGamesListLoaded = useStore((state) => state.isGamesListLoaded);
+
   useEffect(() => {
-    if (appStart) {return}
-    console.log('App started');
-    appStart = true;
-    console.log('Hello World');
+    loadGamesList();
   }, []);
 
+
   return (
-    <div >
-      Hello World s
-    </div>
+
+    <>
+      {
+        (appstate === AppstateEnum.ERRORLOADINGGAMES && <div>ERRORLOADINGGAMES</div>)
+
+      }
+      {
+        appstate === AppstateEnum.SUCCESSLOADINGGAMES &&
+        <div>SUCCESSLOADINGGAMES</div>
+      }
+      {
+        (appstate === AppstateEnum.LOADINGAMES || appstate === AppstateEnum.LOADINGGAMEDATA) && <div>LOADING</div>
+      }
+      {isGamesListLoaded && <GameStats />}
+    </>
+
+
+    // <div >
+    //   {store.appstate}
+    // </div>
   );
 }
 

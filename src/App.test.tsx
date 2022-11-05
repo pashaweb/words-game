@@ -1,9 +1,22 @@
+/** @jest-environment jsdom */
+
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Hello World/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App', () => {
+
+  test('renders learn react link', async () => {
+
+
+    render(<App />);
+    await screen.findByText(/ERRORLOADINGGAMES/i);
+    //console.log(container.innerHTML);
+  });
 });
+
+
+
+  // expect(linkElement).toBeInTheDocument();
+//});
