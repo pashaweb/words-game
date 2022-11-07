@@ -1,22 +1,22 @@
 
-export const loadAllGames = async () => {
-    try {
-        console.log('loadAllGames');
-        const data = await fetch('/data/games.json');
-        const games = await data.json();
-        return games;
-    } catch {
-        return [];
-    }
-};
 
-export const loadGame = async (url: string) => {
+export const loadData= async () => {
     try {
-        console.log('Load game data');
-        const data = await fetch(`/data/${url}`);
-        const game = await data.json();
-        return game;
-    } catch {
-        return null;
+        const response = await fetch("https://raw.githubusercontent.com/finmid/code-challenge-fe/main/find-challenge");
+        const data:string = await response.text();
+        const games = data.split("\n");
+        const gamesList = [];
+        for (let i = 0; i < games.length; i++) {
+            const game = games[i];
+            try{
+                const gameData = JSON.parse(game);
+                gamesList.push(gameData);
+            }catch(e){
+            }
+        }
+        return gamesList;
+    } catch (error) {   
+        return []
     }
+    
 }

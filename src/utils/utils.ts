@@ -45,7 +45,7 @@ export const convertCharacterGrid = (inputGrid: string[][]): IGameGrid => {
         }
         row.forEach((col, colIndex) => {
             outputGrid.charGrid.push({
-                id: `${rowIndex},${colIndex}`,
+                id: `${colIndex},${rowIndex}`,
                 char: col,
                 isHighlighted: false,
                 isFound: false,
@@ -56,7 +56,7 @@ export const convertCharacterGrid = (inputGrid: string[][]): IGameGrid => {
     return outputGrid;
 }
 
-export const setIsHeighlighted = (points: string[], grid: ICharGridItem[], startPoint: string): ICharGridItem[] => {
+export function setIsHeighlightedUtil(points: string[], grid: ICharGridItem[], startPoint: string): ICharGridItem[] {
     const charGrid: ICharGridItem[] | undefined = grid;
     if (charGrid) {
         charGrid.forEach((item) => {
@@ -72,7 +72,31 @@ export const setIsHeighlighted = (points: string[], grid: ICharGridItem[], start
         });
     }
     return grid;
+}
+
+export const setFound = (points: string[], grid: ICharGridItem[]): ICharGridItem[] => {
+    const charGrid: ICharGridItem[] | undefined = grid;
+    if (charGrid) {
+        charGrid.forEach((item) => {
+            if (points.length > 0 && points.includes(item.id)) {
+                item.isFound = true;
+                return;
+            }
+        });
+    }
+    return charGrid;
 };
+
+export const clearIsHeighlighted = (grid: ICharGridItem[]): ICharGridItem[] => {
+    const charGrid: ICharGridItem[] | undefined = grid;
+    if (charGrid) {
+        charGrid.forEach((item) => {
+            item.isHighlighted = false;
+        });
+    }
+    return charGrid;
+};
+
 export const findSelection = (startPoint: string, hooverPoint: string): string[] => {
     const [startRow, startCol] = startPoint.split(',').map(Number);
     const [hooverRow, hooverCol] = hooverPoint.split(',').map(Number);
@@ -110,8 +134,8 @@ export const findSelection = (startPoint: string, hooverPoint: string): string[]
         const col = startCol + shiftObj.dirV * shiftObj.stepV * i;
         points.push(`${row},${col}`);
     }
-    if (shiftObj.dirH === -1 || shiftObj.dirV === -1) {
-        points = points.reverse();
-    }
+    // if (shiftObj.dirH === -1 || shiftObj.dirV === -1) {
+    //     points = points.reverse();
+    // }
     return points;
 }

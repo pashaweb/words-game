@@ -1,4 +1,4 @@
-import { IGameGrid, convertCharacterGrid , setIsHeighlighted, ICharGridItem, findSelection} from './utils';
+import { IGameGrid, convertCharacterGrid , setIsHeighlightedUtil, ICharGridItem, findSelection} from './utils';
 describe('Utils convertCharacterGrid', () => {
     it('should convert character grid', () => {
         const inputGrid: string[][] = [
@@ -11,13 +11,13 @@ describe('Utils convertCharacterGrid', () => {
             cols: 3,
             charGrid: [
                 { id: '0,0', char: 'a', isHighlighted: false, isFound: false },
-                { id: '0,1', char: 'b', isHighlighted: false, isFound: false },
-                { id: '0,2', char: 'c', isHighlighted: false, isFound: false },
-                { id: '1,0', char: 'd', isHighlighted: false, isFound: false },
+                { id: '1,0', char: 'b', isHighlighted: false, isFound: false },
+                { id: '2,0', char: 'c', isHighlighted: false, isFound: false },
+                { id: '0,1', char: 'd', isHighlighted: false, isFound: false },
                 { id: '1,1', char: 'e', isHighlighted: false, isFound: false },
-                { id: '1,2', char: 'f', isHighlighted: false, isFound: false },
-                { id: '2,0', char: 'g', isHighlighted: false, isFound: false },
-                { id: '2,1', char: 'h', isHighlighted: false, isFound: false },
+                { id: '2,1', char: 'f', isHighlighted: false, isFound: false },
+                { id: '0,2', char: 'g', isHighlighted: false, isFound: false },
+                { id: '1,2', char: 'h', isHighlighted: false, isFound: false },
                 { id: '2,2', char: 'i', isHighlighted: false, isFound: false },
             ],
         };
@@ -34,13 +34,13 @@ describe('Utils convertCharacterGrid', () => {
             cols: 3,
             charGrid: [
                 { id: '0,0', char: 'a', isHighlighted: false, isFound: false },
-                { id: '0,1', char: 'b', isHighlighted: false, isFound: false },
-                { id: '0,2', char: 'c', isHighlighted: false, isFound: false },
-                { id: '1,0', char: 'd', isHighlighted: false, isFound: false },
+                { id: '1,0', char: 'b', isHighlighted: false, isFound: false },
+                { id: '2,0', char: 'c', isHighlighted: false, isFound: false },
+                { id: '0,1', char: 'd', isHighlighted: false, isFound: false },
                 { id: '1,1', char: 'e', isHighlighted: false, isFound: false },
-                { id: '1,2', char: '', isHighlighted: false, isFound: false },
-                { id: '2,0', char: 'g', isHighlighted: false, isFound: false },
-                { id: '2,1', char: 'h', isHighlighted: false, isFound: false },
+                { id: '2,1', char: '', isHighlighted: false, isFound: false },
+                { id: '0,2', char: 'g', isHighlighted: false, isFound: false },
+                { id: '1,2', char: 'h', isHighlighted: false, isFound: false },
                 { id: '2,2', char: 'i', isHighlighted: false, isFound: false },
             ],
         };
@@ -75,7 +75,7 @@ describe('Utils setIsHeighlighted', () => {
             { id: '2,2', char: 'i', isHighlighted: false, isFound: false },
         ];
 
-        expect(setIsHeighlighted(points, grid, startPoint)).toEqual(outputGrid);
+        expect(setIsHeighlightedUtil(points, grid, startPoint)).toEqual(outputGrid);
     });
     it('should set isHighlighted to false except start point', () => {
         const points: string[] = [];
@@ -103,7 +103,7 @@ describe('Utils setIsHeighlighted', () => {
             { id: '2,2', char: 'i', isHighlighted: false, isFound: false },
         ];
 
-        expect(setIsHeighlighted(points, grid, startPoint)).toEqual(outputGrid);
+        expect(setIsHeighlightedUtil(points, grid, startPoint)).toEqual(outputGrid);
     });
     it('should set isHighlighted to false', () => {
         const points: string[] = [];
@@ -131,7 +131,7 @@ describe('Utils setIsHeighlighted', () => {
             { id: '2,2', char: 'i', isHighlighted: false, isFound: false },
         ];
 
-        expect(setIsHeighlighted(points, grid, startPoint)).toEqual(outputGrid);
+        expect(setIsHeighlightedUtil(points, grid, startPoint)).toEqual(outputGrid);
     });
 });
 
@@ -145,7 +145,7 @@ describe("Utile findSelection", () => {
     it("should find selection horizontal simple reverse", () => {
         const startPoin= '0,2';
         const endPoint= '0,0';
-        const exceptedSelection = ['0,0', '0,1', '0,2'];
+        const exceptedSelection = ['0,2', '0,1', '0,0'];
         expect(findSelection(startPoin, endPoint)).toEqual(exceptedSelection); 
      });
     it("should find selection vertical simple", () => {
@@ -157,7 +157,7 @@ describe("Utile findSelection", () => {
      it("should find selection vertical simple reversed", () => {
         const startPoin= '2,0';
         const endPoint= '0,0';
-        const exceptedSelection = ['0,0', '1,0', '2,0'];
+        const exceptedSelection = ['2,0', '1,0', '0,0'];
         expect(findSelection(startPoin, endPoint)).toEqual(exceptedSelection); 
      });
      it("should find selection diagonal simple", () => {
@@ -169,7 +169,7 @@ describe("Utile findSelection", () => {
      it("should find selection diagonal simple reversed", () => {
         const startPoin= '2,2';
         const endPoint= '0,0';
-        const exceptedSelection = ['0,0', '1,1', '2,2'];
+        const exceptedSelection = ['2,2', '1,1', '0,0'];
         expect(findSelection(startPoin, endPoint)).toEqual(exceptedSelection); 
      })
      it("should find selection diagonal complex", () => {

@@ -19,3 +19,6 @@
 .game-grid-item.hilight{
     background-color: yellow;
 }
+.game-grid-item.selected{
+    background-color: red;
+}

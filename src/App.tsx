@@ -8,7 +8,6 @@ function App() {
   const appstate = useStore((state) => state.appstate);
   const loadGamesList = useStore((state) => state.loadGamesList);
   const isGamesListLoaded = useStore((state) => state.isGamesListLoaded);
-  const loadFirstGame = useStore((state) => state.loadGameData);
   const currentGameState = useStore((state) => state.currentGameState);
   let appInitieted:boolean = false
   useEffect(() => {
@@ -23,12 +22,12 @@ function App() {
     return () => {};
   }, []);
 
-  useEffect(() => {
-    if (isGamesListLoaded) {
-      loadFirstGame();
-    }
-    return () => {};
-  }, [isGamesListLoaded, loadFirstGame]);
+  // useEffect(() => {
+  //   if (isGamesListLoaded) {
+  //     loadFirstGame();
+  //   }
+  //   return () => {};
+  // }, [isGamesListLoaded, loadFirstGame]);
 
   return (
 

@@ -5,8 +5,8 @@ export default function GameStats(): JSX.Element {
     const totalGames = useStore((state) => state.totalGames);
     const wins = useStore((state) => state.wins);
     const currentGameNumber = useStore((state) => state.currentGameNumber);
-    const gamesList = useStore((state) => state.gamesList);
-
+    const word_locations = useStore((state) => state.word_locations);
+    const word = useStore((state) => state.word);
    // const
     return (
         <>
@@ -20,11 +20,10 @@ export default function GameStats(): JSX.Element {
                Current Game: {currentGameNumber}
             </div>
             <div>
-                Games List: {
-                    gamesList.map((game) => {
-                        return <div key={game.id}>{game.id}</div>
-                    })
-                }
+                Word: {word}
+            </div>
+            <div>
+               Translations: {JSON.stringify(word_locations)}
             </div>
             
         </>

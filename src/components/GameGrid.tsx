@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import useStore from "../store/store";
 import { IGameGrid } from "../utils/utils";
 import "./GameGrid.css"
@@ -12,6 +12,7 @@ function GameGrid() {
   const setcurrentStartSelectionPoint = useStore((state) => state.setcurrentStartSelectionPoint);
   const setSelection = useStore((state) => state.setSelection);
   const currentStartSelectionPoint = useStore((state) => state.currentStartSelectionPoint);
+  const checkSelection = useStore((state) => state.checkSelection);
 
   const mouseDounHandler = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -21,9 +22,10 @@ function GameGrid() {
       "mouseup",
       () => {
         console.log("mouse up");
+        checkSelection();
       },
       { once: true });
-  }, [setcurrentStartSelectionPoint]);
+  }, [setcurrentStartSelectionPoint, checkSelection]);
 
   const mouseEnterHandler = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ function GameGrid() {
         return <div
           onMouseDown={mouseDounHandler}
           onMouseEnter={mouseEnterHandler}
-          className={`game-grid-item ${item.isHighlighted ? 'hilight' : ''}`}
+          className={`game-grid-item ${item.isHighlighted ? 'hilight' : ''} ${item.isFound ? 'selected' : ''}`}
           key={item.id}
           id={item.id}
         >
