@@ -1,5 +1,6 @@
-import { url } from 'inspector';
 import create from 'zustand'
+import { loadAllGames, loadGame } from '../api/api';
+import { convertCharacterGrid, findSelection, ICharGridItem, IGameGrid, setIsHeighlighted } from '../utils/utils';
 export enum AppstateEnum {
     INIT = 'INIT',
     LOADINGAMES = 'LOADINGAMES',
@@ -24,12 +25,7 @@ export interface IGameItem {
     url: string;
 }
 
-export interface ICharGridItem {
-    id: string;
-    char: string;
-    isHighlighted: boolean;
-    isFound: boolean;
-}
+
 
 // Zustand implementation
 type Store = {
@@ -37,6 +33,7 @@ type Store = {
     totalGames: number
     currentGameNumber: number | null
     currentGameState: GamestateEnum,
+    currentGameGrid: IGameGrid | null,
     wins: number
     gamesList: IGameItem[],
     isGamesListLoaded: boolean,
@@ -44,36 +41,18 @@ type Store = {
     target_language: string | null,
     word: string | null,
     word_locations: { [key: string]: string },
-    charecters: ICharGridItem[],
+    currentStartSelectionPoint: string | null,
+
 }
 
 type Actions = {
     setAppState: (appstate: AppstateEnum) => void
     loadGamesList: () => void
-    loadGameData: (gameId: string) => void
+    loadGameData: () => void
     loadNextGame: () => void
-}
-
-export const loadAllGames = async () => {
-    try {
-        console.log('loadAllGames');
-        const data = await fetch('/data/games.json');
-        const games = await data.json();
-        return games;
-    } catch {
-        return [];
-    }
-}
-
-export const loadGame = async (url: string) => {
-    try {
-        console.log('Load game data');
-        const data = await fetch(`/data/${url}`);
-        const game = await data.json();
-        return game;
-    } catch {
-        return null;
-    }
+    setcurrentStartSelectionPoint: (point: string) => void
+    setIsHeighlighted: (points: string[]) => void
+    setSelection: (point: string) => void
 }
 
 const useStore = create<Store & Actions>((set, get) => ({
@@ -88,40 +67,66 @@ const useStore = create<Store & Actions>((set, get) => ({
     target_language: null,
     word: null,
     word_locations: {},
-    charecters: [],
+    currentGameGrid: null,
+    currentStartSelectionPoint: null,
     setAppState: (appstate: AppstateEnum) => set({ appstate }),
     loadGamesList: async () => {
         set({ appstate: AppstateEnum.LOADINGAMES });
         const games = await loadAllGames();
         if (games.length > 0) {
-            console.log('loadGamesList', games);
-
             set({
                 appstate: AppstateEnum.SUCCESSLOADINGGAMES,
                 totalGames: games.length,
                 gamesList: games, isGamesListLoaded: true
             });
-            get().loadGameData(games[0].url);
-            //useStore.getState().loadGameData(useStore.getState().gamesList[0].url);
         } else {
             set({ appstate: AppstateEnum.ERRORLOADINGGAMES });
         }
     },
-    loadGameData: async (gameId: string) => {
-        set({ currentGameState: GamestateEnum.LOADING});
-        const data = await fetch(`/data/${gameId}`);
-        const game = await data.json();
+    loadGameData: async () => {
+        set({ currentGameState: GamestateEnum.LOADING });
+        const game = await loadGame(get().gamesList[get().currentGameNumber!].url);
         if (game) {
-            set({ currentGameState: GamestateEnum.PLAYGAME});
-
+            set({ currentGameState: GamestateEnum.PLAYGAME });
+            const { source_language, target_language, word, word_locations } = game;
+            set({ source_language, target_language, word, word_locations });
+            const gameGrid = convertCharacterGrid(game.character_grid);
+            set({ currentGameGrid: gameGrid });
         } else {
             set({ currentGameState: GamestateEnum.ERROR });
         }
     },
     loadNextGame: () => {
         set({ appstate: AppstateEnum.LOADNEXTGAME });
+
+    },
+    setcurrentStartSelectionPoint: (point: string) => {
+        console.log('setcurrentStartSelectionPoint', point);
+        set({ currentStartSelectionPoint: point });
+        get().setIsHeighlighted([]);
+    },
+    setIsHeighlighted: (points: string[]) => {
+        const currentGameGrid = get().currentGameGrid;
+        const charGrid: ICharGridItem[] | undefined = currentGameGrid?.charGrid;
+        const startPoint: string = get().currentStartSelectionPoint || "";
+        if (charGrid) {
+            const newCharGrid = setIsHeighlighted(points, charGrid, startPoint);
+            set({ currentGameGrid: { ...currentGameGrid!, charGrid: newCharGrid } });
+        }
+    },
+    setSelection: (point: string) => {
+        console.log('setSelection', point);
+        const currentGameGrid = get().currentGameGrid;
+        const charGrid: ICharGridItem[] | undefined = currentGameGrid?.charGrid;
+        const startPoint: string = get().currentStartSelectionPoint || "";
+        const points:string[] = findSelection(startPoint, point);
+        
+        if (charGrid) {
+            const newCharGrid = setIsHeighlighted(points, charGrid, startPoint);
+            set({ currentGameGrid: { ...currentGameGrid!, charGrid: newCharGrid } });
+        }
     }
-}))
+}));
 
 
 
